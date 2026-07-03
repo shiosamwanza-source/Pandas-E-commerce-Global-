@@ -1,0 +1,6 @@
+# Usipaki API keys
+.env
+config.js
+# System files
+.DS_Store
+node_modules/
