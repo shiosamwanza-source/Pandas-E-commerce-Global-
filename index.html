@@ -571,6 +571,21 @@
     <!-- JAVASCRIPT — PANDAS OS Frontend Engine -->
     <!-- ============================================ -->
     <script>
+        function downloadReceipt() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Data ya mfano - unaweza kuibadilisha iwe dynamic
+    doc.setFontSize(18);
+    doc.text("PANDAS Global Logistics", 20, 20);
+    doc.setFontSize(12);
+    doc.text("Shipping Receipt", 20, 30);
+    doc.text("Tracking No: " + document.getElementById('modal-tracking-input').value, 20, 40);
+    doc.text("Status: In Transit", 20, 50);
+    
+    doc.save("Pandas_Receipt.pdf");
+}
+
         // --- PANDAS OS: ADVANCED UTILITIES ---
 
 // 1. Kuhifadhi namba za tracking kwenye kivinjari cha mteja
