@@ -570,6 +570,73 @@
     <!-- JAVASCRIPT — PANDAS OS Frontend Engine -->
     <!-- ============================================ -->
     <script>
+        // --- PANDAS OS: ADVANCED UTILITIES ---
+
+// 1. Kuhifadhi namba za tracking kwenye kivinjari cha mteja
+function saveTracking(number) {
+    let history = JSON.parse(localStorage.getItem('pandas_history') || '[]');
+    if (!history.includes(number)) {
+        history.unshift(number);
+        localStorage.setItem('pandas_history', JSON.stringify(history.slice(0, 5)));
+    }
+}
+
+// 2. Integration ya WhatsApp (n8n Webhook)
+async function subscribeWhatsAppTracking() {
+    const phone = document.getElementById('whatsapp-notify-phone').value.trim();
+    const trackingNo = document.getElementById('modal-tracking-input').value.trim();
+
+    if (!phone || !trackingNo) {
+        showToast("⚠️ Hitilafu", "Hakikisha namba na tracking number vipo.");
+        return;
+    }
+
+    const btn = event.target;
+    btn.textContent = "Inasajili...";
+
+    try {
+        const response = await fetch(PANDAS_CONFIG.N8N_WEBHOOK, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                action: "SUBSCRIBE_ALERTS",
+                phone: phone,
+                tracking_number: trackingNo
+            })
+        });
+
+        if (response.ok) {
+            showToast("✅ Imefanikiwa!", "Arifa za WhatsApp zimeamilishwa.");
+        }
+    } catch (error) {
+        showToast("❌ Hitilafu", "Server haipatikani, jaribu tena.");
+    } finally {
+        btn.textContent = "Jisajili";
+    }
+}
+
+// 3. Kuboresha utafutaji wa mizigo
+function initiateTracking() {
+    const trackingNo = document.getElementById('modal-tracking-input').value.trim();
+    
+    if (trackingNo.length < 5) {
+        showToast("⚠️ Invalid", "Tafadhali ingiza namba sahihi.");
+        return;
+    }
+
+    saveTracking(trackingNo); // Inahifadhi kwenye browser
+    fetchTrackingFromAfterShip(); // Inaita function yako ya sasa ya tracking
+}
+
+// 4. Responsive fix kwa ajili ya simu (CSS ya ziada ndani ya JS)
+const style = document.createElement('style');
+style.innerHTML = `
+    @media (max-width: 640px) {
+        .modal-content { width: 95% !important; margin: 10px !important; }
+    }
+`;
+document.head.appendChild(style);
+
         // ==========================================
         // CONFIGURATION — Badilisha hapa kwa seva yako
         // ==========================================
